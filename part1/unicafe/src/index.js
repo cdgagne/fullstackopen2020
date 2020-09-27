@@ -1,19 +1,37 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 
-const Statistics = (props) => (
-  <div>
-    <h2>Statistics</h2>
-    <ul>
-      <li>good {props.good}</li>
-      <li>neutral {props.neutral}</li>
-      <li>bad {props.bad}</li>
-      <li>all {props.good + props.neutral + props.bad}</li>
-      <li>average {(props.good + props.bad*-1) / (props.good + props.neutral + props.bad)}</li>
-      <li>positive {props.good / (props.good + props.neutral + props.bad) * 100}%</li>
-    </ul>
-  </div>
-)
+const Statistic = (props) => <li>{props.text} {props.value}</li>
+
+const Statistics = (props) => {
+  const all = props.good + props.neutral + props.bad
+  const average = (props.good + props.bad*-1) / (props.good + props.neutral + props.bad)
+  const positive = props.good / (props.good + props.neutral + props.bad) * 100 + "%"
+
+  if (props.good === 0 && props.neutral === 0 && props.bad === 0) {
+    return (
+      <div>
+        <h2>Statistics</h2>
+        <p>No feedback given</p>
+      </div>
+    )
+  }
+  else {
+    return (
+      <div>
+          <h2>Statistics</h2>
+          <ul>
+            <Statistic text="good" value={props.good} />
+            <Statistic text="neutral" value={props.neutral} />
+            <Statistic text="bad" value={props.bad} />
+            <Statistic text="all" value={all} />
+            <Statistic text="average" value={average} />
+            <Statistic text="positive" value={positive} />
+          </ul>
+      </div>
+    )
+  }
+}
 
 const Button = (props) => (
   <button onClick={props.onClick}>{props.text}</button>
