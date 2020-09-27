@@ -3,11 +3,14 @@ import ReactDOM from 'react-dom';
 
 const Statistics = (props) => (
   <div>
+    <h2>Statistics</h2>
     <ul>
-      <h2>Statistics</h2>
       <li>good {props.good}</li>
       <li>neutral {props.neutral}</li>
       <li>bad {props.bad}</li>
+      <li>all {props.good + props.neutral + props.bad}</li>
+      <li>average {(props.good + props.bad*-1) / (props.good + props.neutral + props.bad)}</li>
+      <li>positive {props.good / (props.good + props.neutral + props.bad) * 100}%</li>
     </ul>
   </div>
 )
@@ -36,7 +39,6 @@ const App = () => {
 
   return (
     <div>
-      <h2></h2>
       <Feedback handleGood={handleGood} handleNeutral={handleNeutral} handleBad={handleBad} />
       <Statistics good={good} neutral={neutral} bad={bad} />
     </div>
