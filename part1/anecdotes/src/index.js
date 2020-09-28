@@ -1,10 +1,28 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 
-const Anecdote = (props) => {
+const AnecdoteOfTheDay = (props) => {
   return (
     <div>
+      <h2>Anecdote of the day</h2>
       {props.anecdotes[props.selected]}
+    </div>
+  )
+}
+
+const AnecdoteWithMostVotes = (props) => {
+  let highest = 0
+  let highestIdx = 0
+  for (let i = 0; i < props.votes.length; ++i) {
+    if (props.votes[i] > highest) {
+      highest = props.votes[i]
+      highestIdx = i
+    }
+  }
+  return (
+    <div>
+      <h2>Anecdote with most votes</h2>
+      {props.anecdotes[highestIdx]}
     </div>
   )
 }
@@ -34,10 +52,11 @@ const App = (props) => {
 
   return (
     <div>
-      <Anecdote anecdotes={props.anecdotes} selected={selected}/>
+      <AnecdoteOfTheDay anecdotes={props.anecdotes} selected={selected}/>
       <Votes selected={selected} votes={votes} />
       <Button text="vote" onClick={handleVote} />
       <Button text="next anecdote" onClick={handleNext} />
+      <AnecdoteWithMostVotes anecdotes={props.anecdotes} votes={votes} />
     </div>
   )
 }
