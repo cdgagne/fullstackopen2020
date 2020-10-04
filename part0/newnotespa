@@ -1,0 +1,29 @@
+note over browser:
+.. notes single page app already loaded ..
+end note
+
+note over browser:
+user types new note in input field
+end note
+
+note over browser:
+user clicks save button
+end note
+
+note over browser:
+browser executes js event handler attached to save button
+end note
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa (JSON POST body: {content: "<note>", date: "<the date and time>"
+
+note over server:
+server processes JSON blob
+saves note
+end note
+
+server-->browser: HTTP 201 (created)
+
+note over browser:
+browser continues save button js event handler execution;
+renders new note in list of notes
+end note
