@@ -7,10 +7,10 @@ const Search = ({handleChange}) => {
     )
 }
 
-const CountryList = ({countries}) => {
+const CountryList = ({countries, handleShowButtonClicked}) => {
     return(
         <div>
-        {countries.map(country => <div key={country.name}>{country.name}</div>)}
+        {countries.map(country => <div key={country.name}>{country.name} <button countryname={country.name} onClick={handleShowButtonClicked}>show</button></div>)}
         </div>
     )
 }
@@ -31,13 +31,13 @@ const Country = ({country}) => {
 
 const Error = () => <div>Too many matches, specify another filter</div>
 
-const Results = ({matchingCountries}) => {
+const Results = ({matchingCountries, handleShowButtonClicked}) => {
     if (matchingCountries.length === 0) {
         return <div></div>
     } else if (matchingCountries.length === 1) {
         return <Country country={matchingCountries[0]} />
     } else if (matchingCountries.length <= 10) {
-        return <CountryList countries={matchingCountries} />
+        return <CountryList countries={matchingCountries} handleShowButtonClicked={handleShowButtonClicked} />
     } else {
         return <Error />
     }
@@ -62,10 +62,17 @@ const App = () => {
             : [])
     }
 
+    const handleShowButtonClicked = (event) => {
+        event.preventDefault()
+        const countryName = event.target.getAttribute("countryname")
+        console.log("country name", countryName)
+        setMatchingCountries(countries.filter(country => country.name === countryName))
+    }
+
     return (
         <div>
             <Search handleChange={handleSearchTextChange} />
-            <Results matchingCountries={matchingCountries} />
+            <Results matchingCountries={matchingCountries} handleShowButtonClicked={handleShowButtonClicked}/>
         </div>
     )
 }
