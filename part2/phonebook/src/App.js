@@ -3,7 +3,7 @@
  * Exercises 2.6 - 2.18
  */
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import personService from './services/persons'
 
 const Person = ({ person }) => <li>{person.name} {person.number}</li>
 
@@ -43,10 +43,10 @@ const App = () => {
   const [ filter, setFilter ] = useState('')
 
   const hook = () => {
-    axios.get('http://localhost:3001/persons')
-    .then(response => {
-      setPersons(response.data)
-    })
+    personService.getAll()
+      .then(returnedPersons => {
+        setPersons(returnedPersons)
+      })
   }
   useEffect(hook, [])
 
@@ -55,9 +55,9 @@ const App = () => {
     const newPerson = {name: newName, number: newNumber}
     const notFound = (persons.find(person => person.name === newPerson.name) === undefined)
     if (notFound) {
-      axios.post('http://localhost:3001/persons', newPerson)
-        .then(response => {
-          setPersons(persons.concat(response.data))
+      personService.create(newPerson)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
         })
