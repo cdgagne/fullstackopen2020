@@ -1,3 +1,7 @@
+/**
+ * Full stack open 2020
+ * Exercises 2.6 - 2.18
+ */
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 
@@ -48,11 +52,15 @@ const App = () => {
 
   const handleAdd = (event) => {
     event.preventDefault()
-    const notFound = (persons.find(person => person.name === newName) === undefined)
+    const newPerson = {name: newName, number: newNumber}
+    const notFound = (persons.find(person => person.name === newPerson.name) === undefined)
     if (notFound) {
-      setPersons(persons.concat({name: newName, number: newNumber}))
-      setNewName('')
-      setNewNumber('')
+      axios.post('http://localhost:3001/persons', newPerson)
+        .then(response => {
+          setPersons(persons.concat(response.data))
+          setNewName('')
+          setNewNumber('')
+        })
     } else {
       alert(`${newName} is already added to phonebook`)
     }
