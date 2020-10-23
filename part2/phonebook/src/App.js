@@ -5,14 +5,14 @@
 import React, { useState, useEffect } from 'react'
 import personService from './services/persons'
 
-const Person = ({ person }) => <li>{person.name} {person.number}</li>
+const Person = ({ person, handleDelete }) => <li>{person.name} {person.number} <button onClick={() => handleDelete(person.id)}>Delete</button></li>
 
-const Persons = ({ persons, filter }) => {
+const Persons = ({ persons, filter, handleDelete }) => {
   const filteredPersons = persons.filter(person => person.name.toLowerCase().includes(filter))
   return (
     <div>
       <ul>
-        {filteredPersons.map(person => <Person key={person.name} person={person} />)}
+        {filteredPersons.map(person => <Person key={person.name} person={person} handleDelete={handleDelete} />)}
       </ul>
     </div>
   )
@@ -74,6 +74,16 @@ const App = () => {
     setNewNumber(event.target.value)
   }
 
+  const handleDelete = (personId) => {
+    const personToDelete = persons.find(person => person.id === personId)
+    if (personToDelete && window.confirm(`Delete ${personToDelete.name}?`)) {
+      personService.remove(personToDelete)
+        .then(response => {
+          setPersons(persons.filter(person => person.id !== personToDelete.id))
+        })
+    }
+  }
+
   const handleFilterChange = (event) => {
     setFilter(event.target.value.toLowerCase())
   }
@@ -85,7 +95,7 @@ const App = () => {
       <h2>Add a new</h2>
       <PersonForm newName={newName} newNumber={newNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} handleSubmit={handleAdd} />
       <h2>Numbers</h2>
-        <Persons persons={persons} filter={filter} />
+        <Persons persons={persons} filter={filter} handleDelete={handleDelete}/>
     </div>
   )
 }
