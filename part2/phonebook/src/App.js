@@ -4,8 +4,9 @@
  */
 import React, { useState, useEffect } from 'react'
 import personService from './services/persons'
+import './index.css'
 
-const Person = ({ person, handleDelete }) => <li>{person.name} {person.number} <button onClick={() => handleDelete(person.id)}>Delete</button></li>
+const Person = ({ person, handleDelete }) => <li>{person.name} {person.number} <button onClick={() => handleDelete(person)}>Delete</button></li>
 
 const Persons = ({ persons, filter, handleDelete }) => {
   const filteredPersons = persons.filter(person => person.name.toLowerCase().includes(filter))
@@ -25,7 +26,7 @@ const Filter = ({ handleChange }) => {
 }
 
 const PersonForm = ({ newName, newNumber, handleNameChange, handleNumberChange, handleSubmit }) => {
-  return(
+  return (
     <form>
       <div>
         <div>name: <input value={newName} onChange={handleNameChange} /></div>
@@ -36,11 +37,23 @@ const PersonForm = ({ newName, newNumber, handleNameChange, handleNumberChange, 
   )
 }
 
+const Notification = ({ message }) => {
+  if (message == null) {
+    return null
+  }
+  return (
+    <div className="notification">
+      {message}
+    </div>
+  )
+}
+
 const App = () => {
   const [ persons, setPersons ] = useState([])
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ filter, setFilter ] = useState('')
+  const [ notificationMessage, setNotificationMessage] = useState(null)
 
   const hook = () => {
     personService.getAll()
@@ -58,6 +71,10 @@ const App = () => {
       personService.create(newPerson)
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
+          setNotificationMessage(`Added ${returnedPerson.name}`)
+          setTimeout(() => {
+            setNotificationMessage(null)
+          }, 3000)
           setNewName('')
           setNewNumber('')
         })
@@ -73,22 +90,25 @@ const App = () => {
     }
   }
 
+  const handleDelete = (personToDelete) => {
+    if (personToDelete && window.confirm(`Delete ${personToDelete.name}?`)) {
+      personService.remove(personToDelete)
+        .then(response => {
+          setPersons(persons.filter(person => person.id !== personToDelete.id))
+          setNotificationMessage(`Removed ${personToDelete.name}`)
+          setTimeout(() => {
+            setNotificationMessage(null)
+          }, 3000)
+        })
+    }
+  }
+
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
 
   const handleNumberChange = (event) => {
     setNewNumber(event.target.value)
-  }
-
-  const handleDelete = (personId) => {
-    const personToDelete = persons.find(person => person.id === personId)
-    if (personToDelete && window.confirm(`Delete ${personToDelete.name}?`)) {
-      personService.remove(personToDelete)
-        .then(response => {
-          setPersons(persons.filter(person => person.id !== personToDelete.id))
-        })
-    }
   }
 
   const handleFilterChange = (event) => {
@@ -98,6 +118,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notificationMessage} />
       <Filter handleChange={handleFilterChange} />
       <h2>Add a new</h2>
       <PersonForm newName={newName} newNumber={newNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} handleSubmit={handleAdd} />
