@@ -7,7 +7,7 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "lint": "eslint .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --verbose"
   },
   "author": "Chris Gagne",
   "license": "MIT",
@@ -19,6 +19,7 @@
     "nodemon": "^2.0.6"
   },
   "devDependencies": {
-    "eslint": "^7.13.0"
+    "eslint": "^7.13.0",
+    "jest": "^26.6.3"
   }
 }
