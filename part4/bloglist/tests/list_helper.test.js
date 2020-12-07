@@ -127,3 +127,26 @@ describe('most blogs', () => {
         expect(result).toEqual(null)
     })
 })
+
+describe('most likes', () => {
+    test('when list has one blog, equals an object that contains the name of the author and the number of likes of the only author in the list', () => {
+        const mostLikesObject = {
+            'author': 'Edsger W. Dijkstra',
+            'likes': 5
+        }
+        const result = listHelper.mostLikes(listWithOneBlog)
+        expect(result).toEqual(mostLikesObject)
+    })
+    test('when list has many blogs, equals an object that contains the name of the author and the number of blogs of the author with the most blogs', () => {
+        const mostLikesObject = {
+            'author': 'Edsger W. Dijkstra',
+            'likes': 17
+        }
+        const result = listHelper.mostLikes(listWithManyBlogs)
+        expect(result).toEqual(mostLikesObject)
+    })
+    test('when the list has no blogs, equals null', () => {
+        const result = listHelper.mostLikes(listWithNoBlogs)
+        expect(result).toEqual(null)
+    })
+})
