@@ -26,50 +26,50 @@ const favouriteBlog = (blogs) => {
 const mostBlogs = (blogs) => {
     if (!blogs || blogs.length === 0) return null
 
-    // Iterate the list of blogs once to count the number of blogs written by each author
-    var blogCount = {}
-    _.each(blogs, (value, index) => {
-        blogCount[value.author] = blogCount[value.author] ? blogCount[value.author] + 1 : 1
-    })
-
-    // Iterate the collection of blogCount to find the author with the most blogs
     var authorWithMostBlogs = {
         'author': '',
         'blogs': 0
     }
-    _.each(blogCount, (value, key) => {
-        if (blogCount[key] > authorWithMostBlogs.blogs) {
+
+    // Iterate the list of blogs once to count the number of blogs written by each author
+    // and keep track of the author with the most blogs
+    var blogCount = {}
+    _.each(blogs, (value, index) => {
+        blogCount[value.author] = blogCount[value.author] ? blogCount[value.author] + 1 : 1
+
+        if (blogCount[value.author] > authorWithMostBlogs.blogs) {
             authorWithMostBlogs = {
-                'author': key,
-                'blogs': blogCount[key]
+                'author': value.author,
+                'blogs': blogCount[value.author]
             }
         }
     })
+
     return authorWithMostBlogs
 }
 
 const mostLikes = (blogs) => {
     if (!blogs || blogs.length === 0) return null
 
-    // Iterate the list of blogs once to sum the likes from blogs by each author
-    var likeCount = {}
-    _.each(blogs, (value, index) => {
-        likeCount[value.author] = likeCount[value.author] ? likeCount[value.author] += value.likes : value.likes
-    })
-
-    // Iterate the collection of likeCount to find the author with the most likes
     var authorWithMostLikes = {
         'author': '',
         'likes': 0
     }
-    _.each(likeCount, (value, key) => {
-        if (likeCount[key] > authorWithMostLikes.likes) {
+
+    // Iterate the list of blogs once to sum the likes from blogs by each author
+    // and keep track of the author with the most likes
+    var likeCount = {}
+    _.each(blogs, (value, index) => {
+        likeCount[value.author] = likeCount[value.author] ? likeCount[value.author] += value.likes : value.likes
+
+        if (likeCount[value.author] > authorWithMostLikes.likes) {
             authorWithMostLikes = {
-                'author': key,
-                'likes': likeCount[key]
+                'author': value.author,
+                'likes': likeCount[value.author]
             }
         }
     })
+
     return authorWithMostLikes
 }
 
