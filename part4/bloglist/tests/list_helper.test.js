@@ -104,3 +104,26 @@ describe('favourite blog', () => {
         expect(result).toEqual(null)
     })
 })
+
+describe('most blogs', () => {
+    test('when list has one blog, equals an object that contains the name of the author and the number of blogs of the only author in the list', () => {
+        const mostBlogsObject = {
+            'author': 'Edsger W. Dijkstra',
+            'blogs': 1
+        }
+        const result = listHelper.mostBlogs(listWithOneBlog)
+        expect(result).toEqual(mostBlogsObject)
+    })
+    test('when list has many blogs, equals an object that contains the name of the author and the number of blogs of the author with the most blogs', () => {
+        const mostBlogsObject = {
+            'author': 'Robert C. Martin',
+            'blogs': 3
+        }
+        const result = listHelper.mostBlogs(listWithManyBlogs)
+        expect(result).toEqual(mostBlogsObject)
+    })
+    test('when the list has no blogs, equals null', () => {
+        const result = listHelper.mostBlogs(listWithNoBlogs)
+        expect(result).toEqual(null)
+    })
+})
