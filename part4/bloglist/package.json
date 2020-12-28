@@ -4,10 +4,10 @@
   "description": "A blog list application",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "start": "NODE_ENV=production node index.js",
+    "dev": "NODE_ENV=development nodemon index.js",
     "lint": "eslint .",
-    "test": "jest --verbose"
+    "test": "NODE_ENV=test jest --verbose --runInBand"
   },
   "author": "Chris Gagne",
   "license": "MIT",
@@ -15,12 +15,14 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
     "lodash": "^4.17.20",
     "mongoose": "^5.10.14",
     "nodemon": "^2.0.6"
   },
   "devDependencies": {
     "eslint": "^7.13.0",
-    "jest": "^26.6.3"
+    "jest": "^26.6.3",
+    "supertest": "^6.0.1"
   }
 }
