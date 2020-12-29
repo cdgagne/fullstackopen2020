@@ -65,6 +65,32 @@ test('if a blog added is missing the likes property it will default to 0', async
     expect(addedBlogs[0].likes).toEqual(0)
 })
 
+test('if a blog added is missing the title or url the HTTP status code will be 400 Bad Request', async () => {
+    const blog = {
+        title: 'Python creator Guido van Rossum joins Microsoft',
+        author: 'Frederic Lardinois',
+        url: 'https://techcrunch.com/2020/11/12/python-creator-guido-van-rossum-joins-microsoft/'
+    }
+
+    let blogWithoutTitle = blog
+    delete blogWithoutTitle.title
+
+    await api
+        .post('/api/blogs')
+        .send(blog)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+
+    let blogWithoutUrl = blog
+    delete blogWithoutUrl.url
+
+    await api
+        .post('/api/blogs')
+        .send(blog)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })
