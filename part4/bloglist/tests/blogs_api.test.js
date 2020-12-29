@@ -8,10 +8,10 @@ const Blog = require('../models/blogs')
 
 beforeEach(async () => {
     await Blog.deleteMany({})
-    helper.initialBlogs.forEach(async (blog) => {
-        let blogObject = new Blog(blog)
-        await blogObject.save()
-    })
+    const blogObjects = helper.initialBlogs
+        .map(blog => new Blog(blog))
+    const promiseArray = blogObjects.map(blog => blog.save())
+    await Promise.all(promiseArray)
 })
 
 test('the correct number of blogs are returned as json', async () => {
@@ -20,6 +20,12 @@ test('the correct number of blogs are returned as json', async () => {
         .expect(200)
         .expect('Content-Type', /application\/json/)
     expect(response.body).toHaveLength(helper.initialBlogs.length)
+})
+
+test('a blog has a unique identifier named id', async () => {
+    const blogs = await helper.blogsInDb()
+
+    expect(blogs[0].id).toBeDefined()
 })
 
 afterAll(() => {
