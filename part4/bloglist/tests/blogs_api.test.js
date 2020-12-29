@@ -28,6 +28,26 @@ test('a blog has a unique identifier named id', async () => {
     expect(blogs[0].id).toBeDefined()
 })
 
+test('a valid blog can be added', async () => {
+    const blog = {
+        title: 'Python creator Guido van Rossum joins Microsoft',
+        author: 'Frederic Lardinois',
+        url: 'https://techcrunch.com/2020/11/12/python-creator-guido-van-rossum-joins-microsoft/',
+        likes: 48,
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(blog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+    const titles = blogsAtEnd.map(b => b.title)
+    expect(titles).toContain(blog.title)
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })
