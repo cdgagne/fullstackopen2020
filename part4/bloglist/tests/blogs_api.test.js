@@ -48,6 +48,23 @@ test('a valid blog can be added', async () => {
     expect(titles).toContain(blog.title)
 })
 
+test('if a blog added is missing the likes property it will default to 0', async () => {
+    const blog = {
+        title: 'Python creator Guido van Rossum joins Microsoft',
+        author: 'Frederic Lardinois',
+        url: 'https://techcrunch.com/2020/11/12/python-creator-guido-van-rossum-joins-microsoft/'
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(blog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+    const addedBlogs = await Blog.find({ title: blog.title })
+    expect(addedBlogs[0].likes).toEqual(0)
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })
