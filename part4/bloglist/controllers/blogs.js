@@ -1,7 +1,5 @@
-const jwt = require('jsonwebtoken')
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blogs')
-const User = require('../models/users')
 const middleware = require('../utils/middleware')
 const auth = require('../utils/auth')
 
@@ -9,6 +7,7 @@ blogsRouter.use(middleware.tokenHandler)
 
 blogsRouter.get('/', async (request, response, next) => {
     const blogs = await Blog.find({}).populate('user', { username: 1, name: 1, id: 1 })
+    console.log('blogs', blogs)
     response.json(blogs)
 })
 

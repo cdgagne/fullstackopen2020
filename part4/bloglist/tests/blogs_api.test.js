@@ -7,11 +7,8 @@ const helper = require('./test_helper')
 const Blog = require('../models/blogs')
 
 beforeEach(async () => {
-    await Blog.deleteMany({})
-    const blogObjects = helper.initialBlogs
-        .map(blog => new Blog(blog))
-    const promiseArray = blogObjects.map(blog => blog.save())
-    await Promise.all(promiseArray)
+    await helper.initUsers()
+    await helper.initBlogs()
 })
 
 describe('viewing a blog', () => {
@@ -31,7 +28,9 @@ describe('viewing a blog', () => {
 })
 
 describe('adding a blog', () => {
-    test('a valid blog can be added', async () => {
+    test('a valid blog is not added when not logged in', async () => {
+        const blogsAtStart = await helper.blogsInDb()
+
         const blog = {
             title: 'Python creator Guido van Rossum joins Microsoft',
             author: 'Frederic Lardinois',
@@ -39,8 +38,29 @@ describe('adding a blog', () => {
             likes: 48,
         }
 
+        // Call the API w/o the Authorization header
         await api
             .post('/api/blogs')
+            .send(blog)
+            .expect(401)
+
+        const blogsAtEnd = await helper.blogsInDb()
+        expect(blogsAtEnd).toEqual(blogsAtStart)
+    })
+
+    test('a valid blog can be added when logged in', async () => {
+        const blog = {
+            title: 'Python creator Guido van Rossum joins Microsoft',
+            author: 'Frederic Lardinois',
+            url: 'https://techcrunch.com/2020/11/12/python-creator-guido-van-rossum-joins-microsoft/',
+            likes: 48,
+        }
+
+        const token = await helper.login('testuser', 'password')
+
+        await api
+            .post('/api/blogs')
+            .set('Authorization', `Bearer ${token}`)
             .send(blog)
             .expect(201)
             .expect('Content-Type', /application\/json/)
@@ -58,8 +78,11 @@ describe('adding a blog', () => {
             url: 'https://techcrunch.com/2020/11/12/python-creator-guido-van-rossum-joins-microsoft/'
         }
 
+        const token = await helper.login('testuser', 'password')
+
         await api
             .post('/api/blogs')
+            .set('Authorization', `Bearer ${token}`)
             .send(blog)
             .expect(201)
             .expect('Content-Type', /application\/json/)
@@ -78,8 +101,11 @@ describe('adding a blog', () => {
         let blogWithoutTitle = blog
         delete blogWithoutTitle.title
 
+        const token = await helper.login('testuser', 'password')
+
         await api
             .post('/api/blogs')
+            .set('Authorization', `Bearer ${token}`)
             .send(blog)
             .expect(400)
             .expect('Content-Type', /application\/json/)
@@ -89,6 +115,7 @@ describe('adding a blog', () => {
 
         await api
             .post('/api/blogs')
+            .set('Authorization', `Bearer ${token}`)
             .send(blog)
             .expect(400)
             .expect('Content-Type', /application\/json/)
@@ -100,8 +127,11 @@ describe('deleting a blog', () => {
         const blogs = await helper.blogsInDb()
         const blogToDelete = blogs[0]
 
+        const token = await helper.login('testuser', 'password')
+
         await api
             .delete(`/api/blogs/${blogToDelete.id}`)
+            .set('Authorization', `Bearer ${token}`)
             .expect(204)
 
         const blogsAfterDelete = await helper.blogsInDb()
@@ -122,8 +152,11 @@ describe('updating a blog', () => {
             likes: 123,
         }
 
+        const token = await helper.login('testuser', 'password')
+
         await api
             .put(`/api/blogs/${blogToUpdate.id}`)
+            .set('Authorization', `Bearer ${token}`)
             .send(newBlogEntry)
             .expect(200)
 
@@ -135,6 +168,6 @@ describe('updating a blog', () => {
     })
 })
 
-afterAll(() => {
-    mongoose.connection.close()
+afterAll(async () => {
+    await mongoose.connection.close()
 })
