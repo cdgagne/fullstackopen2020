@@ -3,6 +3,7 @@ const blogsRouter = require('express').Router()
 const Blog = require('../models/blogs')
 const User = require('../models/users')
 const middleware = require('../utils/middleware')
+const auth = require('../utils/auth')
 
 blogsRouter.use(middleware.tokenHandler)
 
@@ -14,12 +15,10 @@ blogsRouter.get('/', async (request, response, next) => {
 blogsRouter.post('/', async (request, response, next) => {
     const body = request.body
 
-    const decodedToken = jwt.verify(request.token, process.env.SECRET)
-    if (!request.token || !decodedToken.id) {
-        return response.status(401).json({ error: 'invalid or missing token' })
+    const user = await auth.getUserFromToken(request.token)
+    if (!user) {
+        return response.status(401).json({ 'error': 'invalid or missing token' })
     }
-
-    const user = await User.findById(decodedToken.id)
 
     const blog = new Blog({
         title: body.title,
@@ -38,8 +37,28 @@ blogsRouter.post('/', async (request, response, next) => {
 })
 
 blogsRouter.delete('/:id', async (request, response, next) => {
-    const result = await Blog.findByIdAndRemove(request.params.id)
-    response.status(204).json(result)
+    const user = await auth.getUserFromToken(request.token)
+    if (!user) {
+        return response.status(401).json({ 'error': 'invalid or missing token' })
+    }
+
+    // Validate that the user requesting the deletion of the blog entry
+    // is the user that created it
+    const blog = await Blog.findById(request.params.id)
+    if (!blog.user.equals(user._id)) {
+        return response.status(401).json({ 'error': 'unauthorized' })
+    }
+
+    // Remove the blog from the list of blogs in the user object
+    // before removing the blog object
+    const userBlogs = user.blogs.filter(b => !b._id.equals(blog._id))
+    user.blogs = userBlogs
+    await user.save()
+
+    // Remove the blog object
+    await Blog.findByIdAndDelete(blog._id)
+
+    response.status(204).json(blog)
 })
 
 blogsRouter.put('/:id', async (request, response, next) => {
