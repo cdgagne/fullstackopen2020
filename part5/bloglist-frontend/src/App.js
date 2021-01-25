@@ -59,6 +59,16 @@ const App = () => {
     }
   }
 
+  const removeBlog = async (blog) => {
+    try {
+      await blogService.remove(blog)
+      const blogs = await blogService.getAll(blog)
+      setAndSortBlogs(blogs)
+    } catch (exception) {
+      displayError('Error removing blog')
+    }
+ }
+
   const displayError = (message) => {
     setErrorMessage(message)
     setTimeout(() => {
@@ -68,7 +78,7 @@ const App = () => {
 
   const displayInfo = (message) => {
     setInfoMessage(message)
-    setTimeout(() => {
+    setTimeout(() =>{
       setInfoMessage(null)
     }, 5000)
   }
@@ -117,7 +127,7 @@ const App = () => {
         </Togglable>
 
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
+          <Blog key={blog.id} blog={blog} updateBlog={updateBlog} removeBlog={removeBlog} user={user} />
         )}
       </div>
     )
