@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import Error from './components/Error'
 import Info from './components/Info'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -107,12 +108,14 @@ const App = () => {
 
         <form onSubmit={handleLogout}><p>{user.name} is logged in <button type="submit">Logout</button></p></form>
 
-        <form onSubmit={handleCreate}>
-          <div>Title: <input type="text" name="blog-title" value={blogTitle} onChange={({target}) => setBlogTitle(target.value)} /></div>
-          <div>Author: <input type="text" name="blog-author" value={blogAuthor} onChange={({target}) => setBlogAuthor(target.value)} /></div>
-          <div>URL: <input type="text" name="blog-url" value={blogUrl} onChange={({target}) => setBlogUrl(target.value)} /></div>
-          <button type="submit">Create</button>
-        </form>
+        <Togglable buttonLabel='New Blog'>
+          <form onSubmit={handleCreate}>
+            <div>Title: <input type="text" name="blog-title" value={blogTitle} onChange={({target}) => setBlogTitle(target.value)} /></div>
+            <div>Author: <input type="text" name="blog-author" value={blogAuthor} onChange={({target}) => setBlogAuthor(target.value)} /></div>
+            <div>URL: <input type="text" name="blog-url" value={blogUrl} onChange={({target}) => setBlogUrl(target.value)} /></div>
+            <button type="submit">Create</button>
+          </form>
+        </Togglable>
 
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
