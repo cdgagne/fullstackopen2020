@@ -36,14 +36,24 @@ const App = () => {
     setUser(null)
   }
 
-  const createBlog = async (blogObject) => {
+  const createBlog = async (blog) => {
     try {
-      const response = await blogService.create(blogObject)
+      const response = await blogService.create(blog)
       displayInfo(`A new blog '${response.title}' by ${response.author} added`)
       setBlogs(blogs.concat(response))
     } catch (exception) {
       displayError(exception.response.data.error)
     }
+  }
+
+  const updateBlog = async (blog) => {
+    try {
+      await blogService.update(blog)
+      setBlogs(blogs.map(b => blog.id === b.id ? blog : b))
+    } catch (exception) {
+      displayError(exception.response.data.error)
+    }
+
   }
 
   const displayError = (message) => {
@@ -102,7 +112,7 @@ const App = () => {
         </Togglable>
 
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
         )}
       </div>
     )
