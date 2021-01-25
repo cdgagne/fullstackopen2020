@@ -36,11 +36,15 @@ const App = () => {
     setUser(null)
   }
 
+  const setAndSortBlogs = (blogs) => {
+    setBlogs(blogs.sort((a,b) => (a.likes < b.likes) ? 1 : -1))
+  }
+
   const createBlog = async (blog) => {
     try {
       const response = await blogService.create(blog)
       displayInfo(`A new blog '${response.title}' by ${response.author} added`)
-      setBlogs(blogs.concat(response))
+      setAndSortBlogs(blogs.concat(response))
     } catch (exception) {
       displayError(exception.response.data.error)
     }
@@ -49,11 +53,10 @@ const App = () => {
   const updateBlog = async (blog) => {
     try {
       await blogService.update(blog)
-      setBlogs(blogs.map(b => blog.id === b.id ? blog : b))
+      setAndSortBlogs(blogs.map(b => blog.id === b.id ? blog : b))
     } catch (exception) {
       displayError(exception.response.data.error)
     }
-
   }
 
   const displayError = (message) => {
@@ -71,9 +74,11 @@ const App = () => {
   }
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+    const fn = async () => {
+      const blogs = await blogService.getAll()
+      setAndSortBlogs(blogs)
+    }
+    fn()
   }, [])
 
   useEffect(() => {
