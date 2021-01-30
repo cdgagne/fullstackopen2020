@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Error from './components/Error'
@@ -14,6 +14,8 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+
+  const blogFormRef = useRef()
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -45,6 +47,7 @@ const App = () => {
       const response = await blogService.create(blog)
       displayInfo(`A new blog '${response.title}' by ${response.author} added`)
       setAndSortBlogs(blogs.concat(response))
+      blogFormRef.current.toggleVisibility()
     } catch (exception) {
       displayError(exception.response.data.error)
     }
@@ -122,7 +125,7 @@ const App = () => {
 
         <form onSubmit={handleLogout}><p>{user.name} is logged in <button type="submit">Logout</button></p></form>
 
-        <Togglable buttonLabel='New Blog'>
+        <Togglable buttonLabel='New Blog' ref={blogFormRef}>
           <BlogForm createBlog={createBlog} />
         </Togglable>
 
