@@ -20,7 +20,7 @@ const App = () => {
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
-      const user = await loginService.login({username, password})
+      const user = await loginService.login({ username, password })
       window.localStorage.setItem('bloglistUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
@@ -39,7 +39,7 @@ const App = () => {
   }
 
   const setAndSortBlogs = (blogs) => {
-    setBlogs(blogs.sort((a,b) => (a.likes < b.likes) ? 1 : -1))
+    setBlogs(blogs.sort((a, b) => (a.likes < b.likes ? 1 : -1)))
   }
 
   const createBlog = async (blog) => {
@@ -56,7 +56,7 @@ const App = () => {
   const updateBlog = async (blog) => {
     try {
       await blogService.update(blog)
-      setAndSortBlogs(blogs.map(b => blog.id === b.id ? blog : b))
+      setAndSortBlogs(blogs.map((b) => (blog.id === b.id ? blog : b)))
     } catch (exception) {
       displayError(exception.response.data.error)
     }
@@ -70,7 +70,7 @@ const App = () => {
     } catch (exception) {
       displayError('Error removing blog')
     }
- }
+  }
 
   const displayError = (message) => {
     setErrorMessage(message)
@@ -81,7 +81,7 @@ const App = () => {
 
   const displayInfo = (message) => {
     setInfoMessage(message)
-    setTimeout(() =>{
+    setTimeout(() => {
       setInfoMessage(null)
     }, 5000)
   }
@@ -110,9 +110,25 @@ const App = () => {
         <Error message={errorMessage} />
         <Info message={infoMessage} />
         <form onSubmit={handleLogin}>
-        <div>username <input type="text" name="username" value={username} onChange={({target}) => setUsername(target.value)} /></div>
-        <div>password <input type="password" name="password" value={password} onChange={({target}) => setPassword(target.value)} /></div>
-        <button type="submit">Login</button>
+          <div>
+            username{' '}
+            <input
+              type='text'
+              name='username'
+              value={username}
+              onChange={({ target }) => setUsername(target.value)}
+            />
+          </div>
+          <div>
+            password{' '}
+            <input
+              type='password'
+              name='password'
+              value={password}
+              onChange={({ target }) => setPassword(target.value)}
+            />
+          </div>
+          <button type='submit'>Login</button>
         </form>
       </div>
     )
@@ -123,15 +139,25 @@ const App = () => {
         <Error message={errorMessage} />
         <Info message={infoMessage} />
 
-        <form onSubmit={handleLogout}><p>{user.name} is logged in <button type="submit">Logout</button></p></form>
+        <form onSubmit={handleLogout}>
+          <p>
+            {user.name} is logged in <button type='submit'>Logout</button>
+          </p>
+        </form>
 
         <Togglable buttonLabel='New Blog' ref={blogFormRef}>
           <BlogForm createBlog={createBlog} />
         </Togglable>
 
-        {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} updateBlog={updateBlog} removeBlog={removeBlog} user={user} />
-        )}
+        {blogs.map((blog) => (
+          <Blog
+            key={blog.id}
+            blog={blog}
+            updateBlog={updateBlog}
+            removeBlog={removeBlog}
+            user={user}
+          />
+        ))}
       </div>
     )
   }
