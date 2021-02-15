@@ -34,14 +34,17 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
     }
   }
 
+  const blogUser = (blog.user ? blog.user.username : 'anonymous')
+
   return (
     <div style={blogStyle}>
-      {blog.title} <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
-      <div style={showWhenVisible}>
-          <p>{blog.url}</p>
-          <p>likes {blog.likes} <button onClick={() => like(blog)}>like</button></p>
-          <p>{blog.author}</p>
-          <p><button style={showWhenBlogUser(blog)} onClick={() => remove(blog)}>remove</button></p>
+      <div className='blogTitleAndAuthor'>{blog.title} {blog.author} <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button></div>
+      <div className='blogDetails' style={showWhenVisible}>
+        <p>{blog.url}</p>
+        <p>likes {blog.likes} <button onClick={() => like(blog)}>like</button></p>
+        <p>{blog.id}</p>
+        <p>{blogUser}</p>
+        <p><button style={showWhenBlogUser(blog)} onClick={() => remove(blog)}>remove</button></p>
       </div>
     </div>
   )
