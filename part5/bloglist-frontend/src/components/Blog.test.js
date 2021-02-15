@@ -47,3 +47,15 @@ test('<Blog /> url and number of likes are shown when the view button is clicked
   // Now visible
   expect(blogDetailsDiv).toBeVisible()
 })
+
+test('<Blog /> like button executes the update function each time it is clicked', () => {
+  const component = render(
+    <Blog blog={blog} user={user} updateBlog={mockUpdateBlog} removeBlog={mockRemoveBlog} />
+  )
+
+  const likeButton = component.container.querySelector('.likeButton')
+  fireEvent.click(likeButton)
+  fireEvent.click(likeButton)
+
+  expect(mockUpdateBlog.mock.calls).toHaveLength(2)
+})
