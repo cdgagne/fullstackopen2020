@@ -109,11 +109,12 @@ const App = () => {
         <h2>log in to application</h2>
         <Error message={errorMessage} />
         <Info message={infoMessage} />
-        <form onSubmit={handleLogin}>
+        <form id='login-form' onSubmit={handleLogin}>
           <div>
             username{' '}
             <input
               type='text'
+              id='username'
               name='username'
               value={username}
               onChange={({ target }) => setUsername(target.value)}
@@ -123,12 +124,13 @@ const App = () => {
             password{' '}
             <input
               type='password'
+              id='password'
               name='password'
               value={password}
               onChange={({ target }) => setPassword(target.value)}
             />
           </div>
-          <button type='submit'>Login</button>
+          <button id='login-button' type='submit'>Login</button>
         </form>
       </div>
     )
