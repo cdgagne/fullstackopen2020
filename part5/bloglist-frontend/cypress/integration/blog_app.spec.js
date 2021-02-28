@@ -35,9 +35,17 @@ describe('Blog app', function() {
     })
   })
 
-  describe.only('When logged in', function() {
+  describe('When logged in', function() {
     beforeEach(function() {
-      cy.login({ username: 'testuser', password: 'testpassword' })
+      const username = 'testuser'
+      const password = 'testpassword'
+      cy.createBlog({
+        username: username,
+        password: password,
+        title: 'An Existing Blog Entry',
+        author: 'Yet Another Author',
+        url: 'http://some-blog-url'})
+      cy.login({username: username, password: password})
     })
 
     it('A blog can be created', function() {
@@ -54,6 +62,13 @@ describe('Blog app', function() {
 
       // The blog entry is in the list of blogs
       cy.get('.blogTitleAndAuthor').should('contain', 'A New Blog Entry Some Authors Name')
+    })
+
+    it.only('A blog can be liked', function() {
+      cy.get('.blogTitleAndAuthor').find('button').click()
+      cy.contains('likes 0')
+      cy.get('.likeButton').click()
+      cy.contains('likes 1')
     })
   })
 })
