@@ -7,14 +7,14 @@ Cypress.Commands.add('login', ({ username, password }) => {
   })
 })
 
-Cypress.Commands.add('createBlog', ({ username, password, title, author, url }) => {
+Cypress.Commands.add('createBlog', ({ username, password, title, author, url, likes }) => {
   console.log('username', username)
   console.log('password', password)
   cy.request('POST', 'http://localhost:3001/api/login', {
     username, password
   }).then(({ body }) => {
     const bloglistUser = JSON.parse(JSON.stringify(body)).token
-    const postbody = { title: title, author: author, url: url }
+    const postbody = { title: title, author: author, url: url, likes: likes }
     cy.request({
         headers: {
           'Authorization': `bearer ${bloglistUser}`
