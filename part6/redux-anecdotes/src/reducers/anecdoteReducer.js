@@ -19,7 +19,7 @@ const asObject = (anecdote) => {
 
 const initialState = anecdotesAtStart.map(asObject)
 
-export const newAnecdote = (anecdote) => {
+export const createAnecdote = (anecdote) => {
   return {
     type: 'NEW_ANECDOTE',
     data: {
@@ -30,7 +30,7 @@ export const newAnecdote = (anecdote) => {
   }
 }
 
-export const addVoteTo = (id) => {
+export const addVote = (id) => {
   return {
     type: 'ADD_VOTE',
     data: { id }
