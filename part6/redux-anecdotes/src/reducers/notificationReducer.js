@@ -22,19 +22,27 @@ export const createNotification = (content, timeoutSeconds) => {
 }
 
 export const dismissNotification = (id) => {
-  return {
-    type: 'DISMISS_NOTIFICATION',
-    data: id
+  return async (dispatch, getState) => {
+    const state = getState()
+    if (state.notification.id === id) {
+      console.log('dismissing notification id', id)
+      dispatch({
+        type: 'DISMISS_NOTIFICATION',
+        data: id
+      })
+    } else {
+      console.log('not dismissing notification id', id)
+    }
   }
 }
 
-const notificationReducer = (state = [], action) => {
+const notificationReducer = (state = null, action) => {
   console.log('ACTION: ', action)
   switch(action.type) {
     case 'NEW_NOTIFICATION':
-      return [...state, action.data]
+      return action.data
     case 'DISMISS_NOTIFICATION':
-      return state.filter(notification => notification.id !== action.data)
+      return null
     default:
       return state
   }

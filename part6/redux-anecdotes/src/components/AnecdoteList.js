@@ -1,5 +1,5 @@
 import React from 'react'
-import NotificationList from './NotificationList'
+import Notification from './Notification'
 import Filter from './Filter'
 import { connect } from 'react-redux'
 import { addVote } from '../reducers/anecdoteReducer'
@@ -15,7 +15,7 @@ const AnecdoteList = (props) => {
   return (
     <div>
       <h2>Anecdotes</h2>
-      <NotificationList />
+      <Notification />
       <Filter />
       {props.anecdotes
         .sort((a, b) => (a.votes > b.votes) ? -1 : 1)
