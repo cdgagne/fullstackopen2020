@@ -4,6 +4,7 @@ import {
   Route,
   Link,
   Redirect,
+  useHistory,
   useRouteMatch,
 } from 'react-router-dom'
 
@@ -17,6 +18,16 @@ const Menu = () => {
       <Link style={padding} to="/create">create new</Link>
       <Link style={padding} to="/about">about</Link>
     </div>
+  )
+}
+
+const Notification = ({ notification }) => {
+  const padding = {
+    paddingBottom: 10
+  }
+
+  return (
+    <div style={padding}>{notification}</div>
   )
 }
 
@@ -72,6 +83,7 @@ const CreateNew = (props) => {
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
 
+  const history = useHistory()
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -81,6 +93,8 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+
+    history.push('/')
   }
 
   return (
@@ -113,14 +127,14 @@ const App = () => {
       author: 'Jez Humble',
       info: 'https://martinfowler.com/bliki/FrequencyReducesDifficulty.html',
       votes: 0,
-      id: 1
+      id: '1'
     },
     {
       content: 'Premature optimization is the root of all evil',
       author: 'Donald Knuth',
       info: 'http://wiki.c2.com/?PrematureOptimization',
       votes: 0,
-      id: 2
+      id: '2'
     }
   ])
 
@@ -129,6 +143,13 @@ const App = () => {
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
     setAnecdotes(anecdotes.concat(anecdote))
+
+    const message = `a new anecdote ${anecdote.content} created!`
+    console.log('setting notification', message)
+    setNotification(message)
+    setTimeout(() => {
+      setNotification('')
+    }, 10000)
   }
 
   const anecdoteById = (id) =>
@@ -147,13 +168,14 @@ const App = () => {
 
   const match = useRouteMatch('/anecdotes/:id')
   const anecdote = match
-    ? anecdotes.find(anecdote => anecdote.id === Number(match.params.id))
+    ? anecdotes.find(anecdote => anecdote.id === match.params.id)
     : null
 
   return (
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
+      <Notification notification={notification} />
       <Switch>
         <Route path="/anecdotes/:id">
           <Anecdote anecdote={anecdote} />
