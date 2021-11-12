@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { connect } from 'react-redux'
 
 const Notification = ({notification}) => {
   const style = {
@@ -14,13 +14,17 @@ const Notification = ({notification}) => {
   )
 }
 
-const NotificationList = () => {
-  const notifications = useSelector(state => state.notifications)
+const NotificationList = (props) => {
   return (
     <div>
-      {notifications.map(notification => <Notification key={notification.id} notification={notification} />)}
+      {props.notifications.map(notification => <Notification key={notification.id} notification={notification} />)}
     </div>
   )
 }
 
-export default NotificationList
+const mapStateToProps = (state) => {
+  return { notifications: state.notifications }
+}
+
+const ConnectedNotificationList = connect(mapStateToProps)(NotificationList)
+export default ConnectedNotificationList
