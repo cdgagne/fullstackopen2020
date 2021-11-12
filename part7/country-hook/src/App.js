@@ -18,8 +18,25 @@ const useField = (type) => {
 const useCountry = (name) => {
   const [country, setCountry] = useState(null)
 
-  useEffect(() => {})
-
+  // REST Countries full name API: https://restcountries.com/v2/name/{name}?fullText=true
+  useEffect(() => {
+    if (name) {
+      axios.get(`https://restcountries.com/v2/name/${name}?fullText=True`)
+        .then(response => {
+          if (response.data.status === 404) {
+            setCountry({data: null, found: false})
+          } else {
+            setCountry({data: response.data[0], found: true})
+          }
+        })
+        .catch(error => {
+          setCountry(null)
+          console.log("Error calling restcountries.com API", error)
+        })
+    } else {
+      setCountry(null)
+    }
+  }, [name])
   return country
 }
 
