@@ -1,3 +1,4 @@
+import { reset } from 'axe-core'
 import React, { useState } from 'react'
 import {
   Switch,
@@ -100,6 +101,13 @@ const CreateNew = (props) => {
     history.push('/')
   }
 
+  const resetFields = (e) => {
+    e.preventDefault()
+    content.clear()
+    author.clear()
+    info.clear()
+  }
+
   return (
     <div>
       <h2>create a new anecdote</h2>
@@ -117,6 +125,7 @@ const CreateNew = (props) => {
           <input {...info} />
         </div>
         <button>create</button>
+        <button onClick={resetFields}>reset</button>
       </form>
     </div>
   )
