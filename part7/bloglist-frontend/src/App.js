@@ -6,14 +6,16 @@ import Info from './components/Info'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import { createInfoNotification, createErrorNotification } from './reducers/notificationReducer'
+import { useDispatch } from 'react-redux'
 
 const App = () => {
-  const [errorMessage, setErrorMessage] = useState(null)
-  const [infoMessage, setInfoMessage] = useState(null)
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+
+  const dispatch = useDispatch()
 
   const blogFormRef = useRef()
 
@@ -73,17 +75,11 @@ const App = () => {
   }
 
   const displayError = (message) => {
-    setErrorMessage(message)
-    setTimeout(() => {
-      setErrorMessage(null)
-    }, 5000)
+    dispatch(createErrorNotification(message))
   }
 
   const displayInfo = (message) => {
-    setInfoMessage(message)
-    setTimeout(() => {
-      setInfoMessage(null)
-    }, 5000)
+    dispatch(createInfoNotification(message))
   }
 
   useEffect(() => {
@@ -107,8 +103,8 @@ const App = () => {
     return (
       <div>
         <h2>log in to application</h2>
-        <Error message={errorMessage} />
-        <Info message={infoMessage} />
+        <Error />
+        <Info />
         <form id='login-form' onSubmit={handleLogin}>
           <div>
             username{' '}
@@ -138,8 +134,8 @@ const App = () => {
     return (
       <div>
         <h2>blogs</h2>
-        <Error message={errorMessage} />
-        <Info message={infoMessage} />
+        <Error />
+        <Info />
 
         <form onSubmit={handleLogout}>
           <p>
