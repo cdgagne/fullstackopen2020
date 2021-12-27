@@ -15,7 +15,7 @@ const BlogForm = (props) => {
     setBlogTitle('')
     setBlogAuthor('')
     setBlogUrl('')
-    await props.createBlog(blogObject)
+    await props.addBlog(blogObject)
   }
 
   return (

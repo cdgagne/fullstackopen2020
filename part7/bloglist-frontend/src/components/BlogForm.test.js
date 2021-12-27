@@ -5,10 +5,10 @@ import '@testing-library/jest-dom/extend-expect'
 import BlogForm from './BlogForm'
 
 test('<BlogForm /> calls the event handler with the right blog details', async () => {
-  const mockCreateBlog = jest.fn()
+  const mockAddBlog = jest.fn()
 
   const component = render(
-    <BlogForm createBlog={mockCreateBlog} />
+    <BlogForm addBlog={mockAddBlog} />
   )
 
   const authorInput = component.container.querySelector('#blogAuthor')
@@ -28,5 +28,5 @@ test('<BlogForm /> calls the event handler with the right blog details', async (
     url: 'test url'
   }
 
-  expect(mockCreateBlog.mock.calls[0][0]).toStrictEqual(expectedBlogObject)
+  expect(mockAddBlog.mock.calls[0][0]).toStrictEqual(expectedBlogObject)
 })

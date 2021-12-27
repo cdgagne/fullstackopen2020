@@ -36,7 +36,14 @@ blogsRouter.post('/', async (request, response, next) => {
   user.blogs = user.blogs.concat(savedBlog._id)
   await user.save()
 
-  response.status(201).json(savedBlog)
+  savedBlog.populate('user', {
+    username: 1,
+    name: 1,
+    id: 1
+  }, (err, savedBlogWithUser) => {
+    console.log('savedBlogWithUser', savedBlogWithUser)
+    response.status(201).json(savedBlogWithUser)
+  })
 })
 
 blogsRouter.delete('/:id', async (request, response, next) => {

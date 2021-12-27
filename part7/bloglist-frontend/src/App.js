@@ -7,10 +7,12 @@ import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import { createInfoNotification, createErrorNotification } from './reducers/notificationReducer'
-import { useDispatch } from 'react-redux'
+import { initializeBlogs, setBlogs, createBlog } from './reducers/blogReducer'
+import { useSelector, useDispatch } from 'react-redux'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  //const [blogs, setBlogs] = useState([])
+  const blogs = useSelector(state => state.blogs)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -41,19 +43,18 @@ const App = () => {
   }
 
   const setAndSortBlogs = (blogs) => {
-    setBlogs(blogs.sort((a, b) => (a.likes < b.likes ? 1 : -1)))
+    dispatch(setBlogs(blogs))
   }
 
-  const createBlog = async (blog) => {
+  const addBlog = async (blog) => {
     try {
-      const response = await blogService.create(blog)
-      displayInfo(`A new blog '${response.title}' by ${response.author} added`)
-      setAndSortBlogs(blogs.concat(response))
+      dispatch(createBlog(blog))
+      displayInfo(`A new blog '${blog.title}' by ${blog.author} added`)
       blogFormRef.current.toggleVisibility()
     } catch (exception) {
       displayError(exception.response.data.error)
     }
-  }
+}
 
   const updateBlog = async (blog) => {
     try {
@@ -83,12 +84,8 @@ const App = () => {
   }
 
   useEffect(() => {
-    const fn = async () => {
-      const blogs = await blogService.getAll()
-      setAndSortBlogs(blogs)
-    }
-    fn()
-  }, [])
+    dispatch(initializeBlogs())
+  }, [dispatch])
 
   useEffect(() => {
     const userJSON = window.localStorage.getItem('bloglistUser')
@@ -144,7 +141,7 @@ const App = () => {
         </form>
 
         <Togglable buttonLabel='New Blog' ref={blogFormRef}>
-          <BlogForm createBlog={createBlog} />
+          <BlogForm addBlog={addBlog} />
         </Togglable>
 
         {blogs.map((blog) => (
