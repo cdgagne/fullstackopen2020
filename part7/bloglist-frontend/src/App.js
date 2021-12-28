@@ -7,7 +7,7 @@ import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import { createInfoNotification, createErrorNotification } from './reducers/notificationReducer'
-import { initializeBlogs, setBlogs, createBlog } from './reducers/blogReducer'
+import { initializeBlogs, createBlog } from './reducers/blogReducer'
 import { useSelector, useDispatch } from 'react-redux'
 
 const App = () => {
@@ -42,10 +42,6 @@ const App = () => {
     setUser(null)
   }
 
-  const setAndSortBlogs = (blogs) => {
-    dispatch(setBlogs(blogs))
-  }
-
   const addBlog = async (blog) => {
     try {
       dispatch(createBlog(blog))
@@ -53,25 +49,6 @@ const App = () => {
       blogFormRef.current.toggleVisibility()
     } catch (exception) {
       displayError(exception.response.data.error)
-    }
-}
-
-  const updateBlog = async (blog) => {
-    try {
-      await blogService.update(blog)
-      setAndSortBlogs(blogs.map((b) => (blog.id === b.id ? blog : b)))
-    } catch (exception) {
-      displayError(exception.response.data.error)
-    }
-  }
-
-  const removeBlog = async (blog) => {
-    try {
-      await blogService.remove(blog)
-      const blogs = await blogService.getAll(blog)
-      setAndSortBlogs(blogs)
-    } catch (exception) {
-      displayError('Error removing blog')
     }
   }
 
@@ -148,8 +125,6 @@ const App = () => {
           <Blog
             key={blog.id}
             blog={blog}
-            updateBlog={updateBlog}
-            removeBlog={removeBlog}
             user={user}
           />
         ))}
