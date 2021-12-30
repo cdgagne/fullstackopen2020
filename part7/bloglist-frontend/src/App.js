@@ -4,60 +4,71 @@ import BlogForm from './components/BlogForm'
 import Error from './components/Error'
 import Info from './components/Info'
 import Togglable from './components/Togglable'
-import blogService from './services/blogs'
-import loginService from './services/login'
-import { createInfoNotification, createErrorNotification } from './reducers/notificationReducer'
 import { initializeBlogs, createBlog } from './reducers/blogReducer'
+import { login, logout, setUser } from './reducers/userReducer'
 import { useSelector, useDispatch } from 'react-redux'
 
-const App = () => {
-  //const [blogs, setBlogs] = useState([])
-  const blogs = useSelector(state => state.blogs)
+const Login = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
+
+  const dispatch = useDispatch()
+
+  const handleLogin = async (event) => {
+    event.preventDefault()
+    dispatch(login(username, password))
+    setUsername('')
+    setPassword('')
+  }
+
+  return (
+    <div>
+      <h2>log in to application</h2>
+      <Error />
+      <Info />
+      <form id='login-form' onSubmit={handleLogin}>
+        <div>
+          username{' '}
+          <input
+            type='text'
+            id='username'
+            name='username'
+            value={username}
+            onChange={({ target }) => setUsername(target.value)}
+          />
+        </div>
+        <div>
+          password{' '}
+          <input
+            type='password'
+            id='password'
+            name='password'
+            value={password}
+            onChange={({ target }) => setPassword(target.value)}
+          />
+        </div>
+        <button id='login-button' type='submit'>Login</button>
+      </form>
+    </div>
+  )
+}
+
+const App = () => {
+  const blogs = useSelector(state => state.blogs)
+  const user = useSelector(state => state.user)
 
   const dispatch = useDispatch()
 
   const blogFormRef = useRef()
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    try {
-      const user = await loginService.login({ username, password })
-      window.localStorage.setItem('bloglistUser', JSON.stringify(user))
-      blogService.setToken(user.token)
-      setUser(user)
-      setUsername('')
-      setPassword('')
-    } catch (exception) {
-      displayError('Wrong username or password')
-    }
+  const addBlog = async (blog) => {
+    dispatch(createBlog(blog))
+    blogFormRef.current.toggleVisibility()
   }
 
   const handleLogout = async (event) => {
     event.preventDefault()
-    window.localStorage.removeItem('bloglistUser')
-    blogService.setToken(null)
-    setUser(null)
-  }
-
-  const addBlog = async (blog) => {
-    try {
-      dispatch(createBlog(blog))
-      displayInfo(`A new blog '${blog.title}' by ${blog.author} added`)
-      blogFormRef.current.toggleVisibility()
-    } catch (exception) {
-      displayError(exception.response.data.error)
-    }
-  }
-
-  const displayError = (message) => {
-    dispatch(createErrorNotification(message))
-  }
-
-  const displayInfo = (message) => {
-    dispatch(createInfoNotification(message))
+    dispatch(logout())
   }
 
   useEffect(() => {
@@ -68,42 +79,12 @@ const App = () => {
     const userJSON = window.localStorage.getItem('bloglistUser')
     if (userJSON) {
       const user = JSON.parse(userJSON)
-      blogService.setToken(user.token)
-      setUser(user)
+      dispatch(setUser(user))
     }
-  }, [])
+  }, [dispatch])
 
   if (user === null) {
-    return (
-      <div>
-        <h2>log in to application</h2>
-        <Error />
-        <Info />
-        <form id='login-form' onSubmit={handleLogin}>
-          <div>
-            username{' '}
-            <input
-              type='text'
-              id='username'
-              name='username'
-              value={username}
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </div>
-          <div>
-            password{' '}
-            <input
-              type='password'
-              id='password'
-              name='password'
-              value={password}
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
-          <button id='login-button' type='submit'>Login</button>
-        </form>
-      </div>
-    )
+    return <Login />
   } else {
     return (
       <div>
