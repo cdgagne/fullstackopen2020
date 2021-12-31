@@ -20,12 +20,10 @@ export const createBlog = (blog) => {
     try {
       const response = await blogService.create(blog)
       dispatch(createInfoNotification(`A new blog '${blog.title}' by ${blog.author} added`))
-      dispatch({
-        type: 'ADD_BLOG',
-        data: response
-      })
+      dispatch({ type: 'ADD_BLOG', data: response })
     } catch (error) {
       dispatch(createErrorNotification(error.response.data.error))
+      throw(error)
     }
   }
 }

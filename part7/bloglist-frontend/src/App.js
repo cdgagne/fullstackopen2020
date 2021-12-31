@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Error from './components/Error'
 import Info from './components/Info'
-import Togglable from './components/Togglable'
-import { initializeBlogs, createBlog } from './reducers/blogReducer'
+import { initializeBlogs } from './reducers/blogReducer'
 import { login, logout, setUser } from './reducers/userReducer'
 import { useSelector, useDispatch } from 'react-redux'
 
@@ -59,13 +58,6 @@ const App = () => {
 
   const dispatch = useDispatch()
 
-  const blogFormRef = useRef()
-
-  const addBlog = async (blog) => {
-    dispatch(createBlog(blog))
-    blogFormRef.current.toggleVisibility()
-  }
-
   const handleLogout = async (event) => {
     event.preventDefault()
     dispatch(logout())
@@ -98,9 +90,7 @@ const App = () => {
           </p>
         </form>
 
-        <Togglable buttonLabel='New Blog' ref={blogFormRef}>
-          <BlogForm addBlog={addBlog} />
-        </Togglable>
+        <BlogForm />
 
         {blogs.map((blog) => (
           <Blog
