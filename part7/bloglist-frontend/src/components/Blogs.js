@@ -5,7 +5,7 @@ import BlogForm from '../components/BlogForm'
 
 const Blogs = () => {
   const blogs = useSelector(state => state.blogs)
-  const user = useSelector(state => state.user)
+  const authnuser = useSelector(state => state.authnuser)
 
   return (
     <div>
@@ -15,7 +15,7 @@ const Blogs = () => {
         <Blog
           key={blog.id}
           blog={blog}
-          user={user}
+          user={authnuser}
         />
       ))}
     </div>

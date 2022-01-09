@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react'
 import Blogs from './components/Blogs'
 import Error from './components/Error'
 import Info from './components/Info'
+import User from './components/User'
 import Users from './components/Users'
 import { initializeBlogs } from './reducers/blogReducer'
-import { login, logout, setUser } from './reducers/userReducer'
+import { login, logout, setUser } from './reducers/authnReducer'
 import { useSelector, useDispatch } from 'react-redux'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
@@ -54,7 +55,7 @@ const Login = () => {
 }
 
 const App = () => {
-  const user = useSelector(state => state.user)
+  const authnuser = useSelector(state => state.authnuser)
 
   const dispatch = useDispatch()
 
@@ -70,12 +71,12 @@ const App = () => {
   useEffect(() => {
     const userJSON = window.localStorage.getItem('bloglistUser')
     if (userJSON) {
-      const user = JSON.parse(userJSON)
-      dispatch(setUser(user))
+      const authnuser = JSON.parse(userJSON)
+      dispatch(setUser(authnuser))
     }
   }, [dispatch])
 
-  if (user === null) {
+  if (authnuser === null) {
     return <Login />
   } else {
     return (
@@ -86,12 +87,15 @@ const App = () => {
 
         <form onSubmit={handleLogout}>
           <p>
-            {user.name} is logged in <button type='submit'>Logout</button>
+            {authnuser.name} is logged in <button type='submit'>Logout</button>
           </p>
         </form>
 
         <Router>
           <Switch>
+            <Route path="/users/:id">
+              <User /> 
+            </Route>
             <Route path="/users">
               <Users />
             </Route>

@@ -1,6 +1,6 @@
 import loginService from '../services/login'
 import blogService from '../services/blogs'
-import { createErrorNotification } from '../reducers/notificationReducer'
+import { createErrorNotification } from './notificationReducer'
 
 export const login = (username, password) => {
   return async (dispatch) => {
@@ -30,7 +30,7 @@ export const setUser = (user) => {
   }
 }
 
-const userReducer = (state = null, action) => {
+const authnReducer = (state = null, action) => {
   switch(action.type) {
     case 'LOGIN':
       return action.data
@@ -41,4 +41,4 @@ const userReducer = (state = null, action) => {
   }
 }
 
-export default userReducer
+export default authnReducer
