@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Blogs from './components/Blogs'
+import Blog from './components/Blog'
 import Error from './components/Error'
 import Info from './components/Info'
 import User from './components/User'
@@ -98,6 +99,9 @@ const App = () => {
             </Route>
             <Route path="/users">
               <Users />
+            </Route>
+            <Route path="/blogs/:id">
+              <Blog />
             </Route>
             <Route path="/">
               <Blogs />
