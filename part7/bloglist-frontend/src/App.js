@@ -8,7 +8,7 @@ import Users from './components/Users'
 import { initializeBlogs } from './reducers/blogReducer'
 import { login, logout, setUser } from './reducers/authnReducer'
 import { useSelector, useDispatch } from 'react-redux'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 
 const Login = () => {
   const [username, setUsername] = useState('')
@@ -77,22 +77,27 @@ const App = () => {
     }
   }, [dispatch])
 
+  const navBarStyle = {
+    padding: 5,
+    display: "inline"
+  }
+
   if (authnuser === null) {
     return <Login />
   } else {
     return (
-      <div>
-        <h2>blogs</h2>
-        <Error />
-        <Info />
+      <Router>
+        <div>
+          <Link style={navBarStyle} to="/">blogs</Link>
+          <Link style={navBarStyle} to="/users">users</Link>
+          <form style={navBarStyle} onSubmit={handleLogout}>
+              {authnuser.name} is logged in <button type='submit'>Logout</button>
+          </form>
 
-        <form onSubmit={handleLogout}>
-          <p>
-            {authnuser.name} is logged in <button type='submit'>Logout</button>
-          </p>
-        </form>
+          <h2>blog app</h2>
+          <Error />
+          <Info />
 
-        <Router>
           <Switch>
             <Route path="/users/:id">
               <User /> 
@@ -107,8 +112,8 @@ const App = () => {
               <Blogs />
           </Route>
           </Switch>
-        </Router>
-      </div>
+        </div>
+      </Router>
     )
   }
 }
