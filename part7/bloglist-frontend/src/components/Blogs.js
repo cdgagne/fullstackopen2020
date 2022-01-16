@@ -19,7 +19,7 @@ const Blogs = () => {
       <BlogForm />
 
       {blogs.map((blog) => (
-        <div style={blogStyle}><Link to={`/blogs/${blog.id}`}>{blog.title}</Link></div>
+        <div key={blog.id} style={blogStyle}><Link to={`/blogs/${blog.id}`}>{blog.title}</Link></div>
       ))}
     </div>
   )

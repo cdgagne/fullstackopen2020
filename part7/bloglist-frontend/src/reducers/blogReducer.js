@@ -63,6 +63,21 @@ export const removeBlog = (blog) => {
   }
 }
 
+export const addComment = (blog, comment) => {
+  return async (dispatch) => {
+    try {
+      const response = await blogService.addComment(blog, comment)
+      dispatch({
+        type: 'UPDATE_BLOG',
+        data: response
+      })
+    } catch (error) {
+      console.log('Error adding comment to blog:', error)
+      dispatch(createErrorNotification('Error adding comment to blog'))
+    }
+  }
+}
+
 const blogReducer = (state = [], action) => {
   console.log('ACTION: ', action)
   switch(action.type) {
