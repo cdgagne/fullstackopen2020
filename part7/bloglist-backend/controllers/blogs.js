@@ -5,6 +5,25 @@ const auth = require('../utils/auth')
 
 blogsRouter.use(middleware.tokenHandler)
 
+blogsRouter.post('/:id/comments', async (request, response, next) => {
+  const user = await auth.getUserFromToken(request.token)
+  if (!user) {
+    return response.status(401).json({ error: 'invalid or missing token' })
+  }
+
+  const blog = await Blog.findById(request.params.id)
+  if (!blog) {
+    return response.status(404).json({ error: 'blog not found' })
+  }
+
+  const body = request.body
+
+  blog.comments.push(body.text)
+
+  const savedBlog = await blog.save({ new: true })
+  return response.status(201).json(savedBlog)
+})
+
 blogsRouter.get('/', async (request, response, next) => {
   const blogs = await Blog.find({}).populate('user', {
     username: 1,

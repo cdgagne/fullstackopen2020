@@ -39,6 +39,8 @@ const Blog = (props) => {
       <p>likes {blog.likes} <button className="likeButton" onClick={() => like(blog)}>like</button></p>
       <p>added by {blogUser}</p>
       <p><button style={showWhenBlogUser(blog)} onClick={() => remove(blog)}>remove</button></p>
+      <h3>comments</h3>
+      <ul>{blog.comments.map(n => <li>{n}</li>)}</ul> 
     </div>
   )
 }
