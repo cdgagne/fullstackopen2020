@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { showBlogForm, hideBlogForm } from '../reducers/blogFormReducer'
 import { createBlog } from '../reducers/blogReducer'
+import { Form, Button } from 'react-bootstrap'
 
 const BlogForm = (props) => {
   const [blogTitle, setBlogTitle] = useState('')
@@ -41,37 +42,38 @@ const BlogForm = (props) => {
   if (state.visible === true) {
     return (
       <div>
-        <form onSubmit={handleCreate}>
-          <div>
-            Title:{' '}
-            <input
+        <Form onSubmit={handleCreate}>
+          <Form.Group>
+            <Form.Label>Title</Form.Label>
+            <Form.Control
               type='text'
               id='blogTitle'
               value={blogTitle}
               onChange={({ target }) => setBlogTitle(target.value)}
             />
-          </div>
-          <div>
-            Author:{' '}
-            <input
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Author</Form.Label>
+            <Form.Control
               type='text'
               id='blogAuthor'
               value={blogAuthor}
               onChange={({ target }) => setBlogAuthor(target.value)}
             />
-          </div>
-          <div>
-            URL:{' '}
-            <input
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>URL</Form.Label>
+            <Form.Control
               type='text'
               id='blogUrl'
               value={blogUrl}
               onChange={({ target }) => setBlogUrl(target.value)}
             />
-          </div>
-          <button type='submit'>Create</button>
-        </form>
-        <button onClick={handleCancelButton}>Cancel</button>
+          </Form.Group>
+          <Button variant='primary' type='submit'>Create</Button>
+          <Button variant='secondary' onClick={handleCancelButton}>Cancel</Button>
+        </Form>
+        
       </div>
     )
   } else {

@@ -9,6 +9,7 @@ import { initializeBlogs } from './reducers/blogReducer'
 import { login, logout, setUser } from './reducers/authnReducer'
 import { useSelector, useDispatch } from 'react-redux'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+import { Form, Button, Nav, Navbar } from 'react-bootstrap'
 
 const Login = () => {
   const [username, setUsername] = useState('')
@@ -28,29 +29,29 @@ const Login = () => {
       <h2>log in to application</h2>
       <Error />
       <Info />
-      <form id='login-form' onSubmit={handleLogin}>
-        <div>
-          username{' '}
-          <input
+      <Form id='login-form' onSubmit={handleLogin}>
+        <Form.Group>
+          <Form.Label>Username</Form.Label>
+          <Form.Control
             type='text'
             id='username'
             name='username'
             value={username}
             onChange={({ target }) => setUsername(target.value)}
           />
-        </div>
-        <div>
-          password{' '}
-          <input
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Password</Form.Label>
+          <Form.Control
             type='password'
             id='password'
             name='password'
             value={password}
             onChange={({ target }) => setPassword(target.value)}
           />
-        </div>
-        <button id='login-button' type='submit'>Login</button>
-      </form>
+        </Form.Group>
+        <Button id='login-button' type='submit'>Login</Button>
+      </Form>
     </div>
   )
 }
@@ -83,16 +84,31 @@ const App = () => {
   }
 
   if (authnuser === null) {
-    return <Login />
+    return (
+      <div className="container">
+        <Login />
+      </div>
+    )
   } else {
     return (
-      <Router>
-        <div>
-          <Link style={navBarStyle} to="/">blogs</Link>
-          <Link style={navBarStyle} to="/users">users</Link>
-          <form style={navBarStyle} onSubmit={handleLogout}>
-              {authnuser.name} is logged in <button type='submit'>Logout</button>
-          </form>
+      <div className="container">
+        <Router>
+          <Navbar collapseOnSelect expand="lg" bg="light" variant="light">
+            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+            <Navbar.Collapse id="responsive-navbar-nav">
+              <Nav className="mr-auto">
+                <Nav.Link href="#" as="span">
+                  <Link style={navBarStyle} to="/">blogs</Link>
+                </Nav.Link>
+                <Nav.Link href="#" as="span">
+                  <Link style={navBarStyle} to="/users">users</Link>
+                </Nav.Link>
+              </Nav>
+                <form style={navBarStyle} onSubmit={handleLogout}>
+                    {authnuser.name} is logged in <button type='submit'>Logout</button>
+                </form>
+            </Navbar.Collapse>
+          </Navbar>
 
           <h2>blog app</h2>
           <Error />
@@ -112,8 +128,8 @@ const App = () => {
               <Blogs />
           </Route>
           </Switch>
-        </div>
-      </Router>
+        </Router>
+      </div>
     )
   }
 }

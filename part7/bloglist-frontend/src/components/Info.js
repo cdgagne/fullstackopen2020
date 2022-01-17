@@ -1,5 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
+import { Alert } from 'react-bootstrap'
 
 const Info = (props) => {
   const notifications = useSelector(state => state.notifications)
@@ -8,7 +9,7 @@ const Info = (props) => {
     return null
   }
   return (
-    <div className='info'>{message}</div>
+    <Alert className='success'>{message}</Alert>
   )
 }
 
